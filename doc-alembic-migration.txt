@@ -1,0 +1,18 @@
+## to initialize alembic
+alembic init alembic
+
+## to create a migration
+alembic revision -m "create users table"
+## to create a migration with auto generation
+alembic revision --autogenerate -m "semaine make nullable column"
+
+## to apply the migration
+alembic upgrade head
+
+## to downgrade the migration
+alembic downgrade -1
+
+## to view the current revision
+alembic current
+
+## to view the history of revisions
