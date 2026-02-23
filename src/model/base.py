@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import MetaData, func, DateTime
-from config.config import PG_SCHEMA
+from src.config.env import PG_SCHEMA
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class Base(DeclarativeBase):
