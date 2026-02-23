@@ -2,13 +2,19 @@ from typing import List
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from model.base import Base
+from src.model.base import Base
 
 class File(Base):
-  __tablename__ = "file"
-  
-  id: Mapped[int] = mapped_column(primary_key=True)
-  name: Mapped[str] = mapped_column(String, nullable=False)
-  live_services: Mapped[List["LiveService"]] = relationship(
-      "LiveService", back_populates="file"
-  )
+    __tablename__ = "file"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    recap_rz: Mapped[List["RecapRZ"]] = relationship(
+        "RecapRZ", back_populates="file"
+    )
+    details_appro_rz: Mapped[List["DetailsApproRz"]] = relationship(
+        "DetailsApproRz", back_populates="file"
+    )
+    details_cp: Mapped[List["DetailsCP"]] = relationship(
+        "DetailsCP", back_populates="file"
+    )
