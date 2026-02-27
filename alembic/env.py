@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 from src.config.config import url_postgres
 from src.model.base import Base
-from src.model import file, live_service_sheets
+from src.model import file, live_service_sheets, suivi
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

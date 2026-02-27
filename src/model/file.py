@@ -18,3 +18,21 @@ class File(Base):
     details_cp: Mapped[List["DetailsCP"]] = relationship(
         "DetailsCP", back_populates="file"
     )
+    transaction_rz: Mapped[List["TransactionRZ"]] = relationship(
+        "TransactionRZ", back_populates="file"
+    )
+    transaction_grossiste_vers_rz: Mapped[List["TransactionGrossisteVersRZ"]] = relationship(
+        "TransactionGrossisteVersRZ", back_populates="file"
+    )
+    transaction_pdv: Mapped[List["TransactionPDV"]] = relationship(
+        "TransactionPDV", back_populates="file"
+    )
+    transaction_livreur: Mapped[List["TransactionLivreur"]] = relationship(
+        "TransactionLivreur", back_populates="file"
+    )
+    transaction_grossiste_livreur: Mapped[List["TransactionGrossisteLivreur"]] = relationship(
+        "TransactionGrossisteLivreur", back_populates="file"
+    )
+    solde_agents: Mapped[List["SoldeAgents"]] = relationship(
+        "SoldeAgents", back_populates="file"
+    )
