@@ -1,5 +1,6 @@
 alembic
 pandas
 SQLAlchemy
+openpyxl
 python-dotenv
 psycopg2-binary
