@@ -1,6 +1,14 @@
 import sys
 from pathlib import Path
 from src.model.live_service_sheets import RecapRZ, DetailsApproRz, DetailsCP
+from src.model.suivi import (
+    TransactionRZ,
+    TransactionGrossisteVersRZ,
+    TransactionPDV,
+    TransactionLivreur,
+    TransactionGrossisteLivreur,
+    SoldeAgents
+)
 
 # Add src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -13,14 +21,20 @@ class Main():
         self.session = session
         
     def run(self):
-        sheets = [
-            {'name': 'recap_rz', 'model': RecapRZ},
-            {'name': 'details_appro_rz', 'model': DetailsApproRz},
-            {'name': 'details_cp', 'model': DetailsCP}
-        ]
-        extract_engine = ExtractEngine("./src/data/REPORT_WEEKLY_LIVE_SERVICES_S_1_2025 - Copy.xlsx", sheets)
-        extract_engine.load(self.session)
-        extract_engine.clean()
+        # sheets = [
+        #     {'name': 'recap_rz', 'model': RecapRZ},
+        #     {'name': 'details_appro_rz', 'model': DetailsApproRz},
+        #     {'name': 'details_cp', 'model': DetailsCP}
+        # ]
+        sheets = {
+            'Transaction RZ': TransactionRZ,
+            'Transaction Grossiste vers RZ': TransactionGrossisteVersRZ,
+            'Transaction PDV': TransactionPDV,
+            'Transaction Livreur': TransactionLivreur,
+            'Transaction Grossiste vers Livr': TransactionGrossisteLivreur,
+            'Solde des Agents': SoldeAgents
+        }
+        extract_engine = ExtractEngine("./src/data", sheets)
         extract_engine.extract(self.session)
         # print("Running the main application...")
         
