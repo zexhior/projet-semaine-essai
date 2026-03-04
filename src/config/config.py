@@ -2,7 +2,7 @@ from sqlalchemy.engine import URL
 from .env import PG_HOST, PG_PORT, PG_USER, PG_PASSWORD, PG_DB, PG_SCHEMA
 
 url_postgres = URL.create(
-  drivername="postgresql+psycopg2",
+  drivername="postgresql+psycopg",
   username=PG_USER,
   password=PG_PASSWORD,
   host=PG_HOST,
