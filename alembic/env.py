@@ -8,6 +8,12 @@ from src.config.config import url_postgres
 from src.model.base import Base
 from src.model import file, live_service_sheets, suivi
 
+def process_revision_directives(context, revision, directives):
+    if context.config.get_main_option("revision_environment") == "true":
+        script = directives[0]
+        now = datetime.now()
+        script.rev_id = f"{now.strftime('%Y_%m_%d_%H_%M_%S')}_{now.microsecond // 1000:03d}"
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -47,6 +53,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        process_revision_directives=process_revision_directives,
     )
 
     with context.begin_transaction():
@@ -70,7 +77,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata, process_revision_directives=process_revision_directives
         )
 
         with context.begin_transaction():
