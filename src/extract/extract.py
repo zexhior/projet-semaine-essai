@@ -18,7 +18,7 @@ class ExtractEngine:
                     self.data[sheet_name].columns = self.data[sheet_name].iloc[2]
                     self.data[sheet_name] = self.data[sheet_name].iloc[3:].reset_index(drop=True)
                 else:
-                    self.data[sheet_name].columns = self.data[sheet_name].iloc[0]
+                    self.data[sheet_name].columns = self.data[sheet_name].iloc[0]   
                     self.data[sheet_name] = self.data[sheet_name].iloc[1:].reset_index(drop=True)
                     
     def clean_empty_data(self, data):
