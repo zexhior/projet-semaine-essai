@@ -418,20 +418,30 @@ const mock2Toi = [
   },
 ];
 
+// Sélection des éléments du DOM pour la table des utilisateurs, ainsi que les éléments de navigation et d'information de pagination
 const userTableBody = document.getElementById("user-table-body");
-const twoToiTableBody = document.getElementById("two-toi-table-body");
 const userPaginationInfo = document.getElementById("user-pagination-info");
 const userPrevPageButton = document.getElementById("user-prev-page");
 const userNextPageButton = document.getElementById("user-next-page");
+const listeSemaineSection = document.getElementById("liste-semaine");
+const navListeSemaine = document.getElementById("nav-liste-semaine");
+const userHeadersLabel = ["Nom", "Prénom", "Région", "Ville", "Numéro"];
+let userTableHeaders = [];
+
+// Sélection des éléments du DOM pour la table 2TOI, ainsi que les éléments de navigation et d'information de pagination
+const twoToiTableBody = document.getElementById("two-toi-table-body");
 const twoToiPaginationInfo = document.getElementById("two-toi-pagination-info");
 const twoToiPrevPageButton = document.getElementById("two-toi-prev-page");
 const twoToiNextPageButton = document.getElementById("two-toi-next-page");
-const listeSemaineSection = document.getElementById("liste-semaine");
 const twoToiSection = document.getElementById("section-2toi");
-const navListeSemaine = document.getElementById("nav-liste-semaine");
 const nav2Toi = document.getElementById("nav-2toi");
-const userTableHeaders = document.querySelectorAll("#user-table th[data-sort-key]");
-const twoToiTableHeaders = document.querySelectorAll("#two-toi-table th[data-sort-key]");
+const twoToiHeadersLabel = ["Agent", "MSISDN"];
+let twoToiTableHeaders = [];
+
+/*
+  Copier le code de dessus pour créer une nouvelle table avec les données correspondant, en veillant à créer les éléments HTML nécessaires dans index.html et à sélectionner les éléments du DOM correspondants dans ce script.js. Assurez-vous de gérer la pagination et le tri de la même manière que pour les autres tables.
+*/
+
 const PAGE_SIZE = 13;
 
 let userCurrentPage = 1;
@@ -439,8 +449,53 @@ let twoToiCurrentPage = 1;
 let userSort = { key: null, direction: "asc" };
 let twoToiSort = { key: null, direction: "asc" };
 
+//fonction pour calculer le nombre total de pages en fonction du nombre d'éléments et de la taille de page
 const getTotalPages = (items) => Math.max(1, Math.ceil(items.length / PAGE_SIZE));
 
+//fonction pour générer la configuration des en-têtes de table à partir des données et des étiquettes d'en-tête fournies
+const getHeadersConfiguration = (data, headerLabels = []) => {
+  if (!Array.isArray(data) || data.length === 0) {
+    return [];
+  }
+
+  return Object.keys(data[0]).map((key, index) => ({
+    key,
+    label: headerLabels[index] ?? key,
+  }));
+};
+
+//fonction pour rendre les en-têtes de table dans le DOM et retourner les éléments d'en-tête pour ajouter les événements de tri
+const renderTableHeaders = (tableId, data, headerLabels = []) => {
+  const table = document.getElementById(tableId);
+  const tableHead = table?.querySelector("thead");
+
+  if (!tableHead) {
+    return [];
+  }
+
+  const headers = getHeadersConfiguration(data, headerLabels);
+
+  tableHead.innerHTML = `
+    <tr>
+      ${headers
+        .map(
+          ({ key, label }) => `
+            <th
+              data-sort-key="${key}"
+              class="sticky top-0 z-10 bg-indigo-100 px-6 py-3 text-left text-xs font-semibold text-indigo-800 uppercase tracking-wider"
+            >
+              ${label}
+            </th>
+          `
+        )
+        .join("")}
+    </tr>
+  `;
+
+  return tableHead.querySelectorAll("th[data-sort-key]");
+};
+
+//fonction de tri
 const compareValues = (valueA, valueB, direction) => {
   const safeA = String(valueA ?? "");
   const safeB = String(valueB ?? "");
@@ -449,6 +504,7 @@ const compareValues = (valueA, valueB, direction) => {
   return direction === "asc" ? comparison : -comparison;
 };
 
+//fonction de tri des éléments en fonction de l'état de tri actuel
 const getSortedItems = (items, sortState) => {
   if (!sortState.key) {
     return items;
@@ -459,6 +515,7 @@ const getSortedItems = (items, sortState) => {
   );
 };
 
+//fonction pour mettre à jour l'état visuel des en-têtes de table en fonction de l'état de tri actuel
 const updateHeaderSortState = (headers, sortState) => {
   headers.forEach((header) => {
     const sortKey = header.dataset.sortKey;
@@ -489,67 +546,52 @@ const updateHeaderSortState = (headers, sortState) => {
   });
 };
 
-const renderUserTable = () => {
-  if (!userTableBody || !userPaginationInfo || !userPrevPageButton || !userNextPageButton) {
+//fonction pour rendre la table en fonction de l'état de tri et de pagination actuel
+const renderTable = (
+  tableBody, //élément tbody de la table à rendre
+  paginationInfo, //élément pour afficher les informations de pagination
+  prevPageButton, //bouton pour la page précédente
+  nextPageButton, //bouton pour la page suivante
+  data, //données à afficher dans la table
+  sort, //état de tri actuel
+  currentPage, //page actuelle
+  tableHeaders //en-têtes de la table pour mettre à jour l'état de tri visuel
+) => {
+  if (!tableBody || !paginationInfo || !prevPageButton || !nextPageButton) {
     return;
   }
 
-  const sortedItems = getSortedItems(mockData, userSort);
+  const sortedItems = getSortedItems(data, sort);
   const totalPages = getTotalPages(sortedItems);
-  userCurrentPage = Math.min(userCurrentPage, totalPages);
+  currentPage = Math.min(currentPage, totalPages);
 
-  const startIndex = (userCurrentPage - 1) * PAGE_SIZE;
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
   const pagedItems = sortedItems.slice(startIndex, startIndex + PAGE_SIZE);
 
-  userTableBody.innerHTML = pagedItems
-    .map(
-      (user) => `
-      <tr class="hover:bg-indigo-100 transition-colors">
-        <td class="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">${user.nom}</td>
-        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.prenom}</td>
-        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.region}</td>
-        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.ville}</td>
-        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.numero}</td>
-      </tr>
-    `
-    )
-    .join("");
-
-  userPaginationInfo.textContent = `Page ${userCurrentPage} / ${totalPages}`;
-  userPrevPageButton.disabled = userCurrentPage === 1;
-  userNextPageButton.disabled = userCurrentPage === totalPages;
-  updateHeaderSortState(userTableHeaders, userSort);
-};
-
-const renderTwoToiTable = () => {
-  if (!twoToiTableBody || !twoToiPaginationInfo || !twoToiPrevPageButton || !twoToiNextPageButton) {
-    return;
-  }
-
-  const sortedItems = getSortedItems(mock2Toi, twoToiSort);
-  const totalPages = getTotalPages(sortedItems);
-  twoToiCurrentPage = Math.min(twoToiCurrentPage, totalPages);
-
-  const startIndex = (twoToiCurrentPage - 1) * PAGE_SIZE;
-  const pagedItems = sortedItems.slice(startIndex, startIndex + PAGE_SIZE);
-
-  twoToiTableBody.innerHTML = pagedItems
+  tableBody.innerHTML = pagedItems
     .map(
       (item) => `
       <tr class="hover:bg-violet-100 transition-colors">
-        <td class="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">${item.agent}</td>
-        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${item.msisdn}</td>
+        ${Object.values(item)
+          .map(
+            (value, index) =>
+              `<td class="px-6 py-4 text-sm ${
+                index === 0 ? "font-medium text-slate-900" : "text-slate-800"
+              } whitespace-nowrap">${value ?? ""}</td>`
+          )
+          .join("")}
       </tr>
     `
     )
     .join("");
 
-  twoToiPaginationInfo.textContent = `Page ${twoToiCurrentPage} / ${totalPages}`;
-  twoToiPrevPageButton.disabled = twoToiCurrentPage === 1;
-  twoToiNextPageButton.disabled = twoToiCurrentPage === totalPages;
-  updateHeaderSortState(twoToiTableHeaders, twoToiSort);
+  paginationInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+  prevPageButton.disabled = currentPage === 1;
+  nextPageButton.disabled = currentPage === totalPages;
+  updateHeaderSortState(tableHeaders, sort);
 };
 
+//fonction pour basculer l'état de tri en fonction de la clé de tri sélectionnée
 const toggleSortDirection = (currentSort, key) => {
   if (currentSort.key === key) {
     return {
@@ -564,106 +606,196 @@ const toggleSortDirection = (currentSort, key) => {
   };
 };
 
-if (userPrevPageButton && userNextPageButton) {
-  userPrevPageButton.addEventListener("click", () => {
-    if (userCurrentPage > 1) {
-      userCurrentPage -= 1;
-      renderUserTable();
-    }
-  });
-
-  userNextPageButton.addEventListener("click", () => {
-    if (userCurrentPage < getTotalPages(mockData)) {
-      userCurrentPage += 1;
-      renderUserTable();
-    }
-  });
-}
-
-if (twoToiPrevPageButton && twoToiNextPageButton) {
-  twoToiPrevPageButton.addEventListener("click", () => {
-    if (twoToiCurrentPage > 1) {
-      twoToiCurrentPage -= 1;
-      renderTwoToiTable();
-    }
-  });
-
-  twoToiNextPageButton.addEventListener("click", () => {
-    if (twoToiCurrentPage < getTotalPages(mock2Toi)) {
-      twoToiCurrentPage += 1;
-      renderTwoToiTable();
-    }
-  });
-}
-
-if (userTableHeaders.length > 0) {
-  userTableHeaders.forEach((header) => {
-    header.addEventListener("click", () => {
-      const { sortKey } = header.dataset;
-
-      if (!sortKey) {
-        return;
+//fonction pour ajouter les événements de pagination aux boutons de pagination
+const callEventPagination = (
+  prevPageButton,
+  nextPageButton,
+  currentPage,
+  data,
+  sort,
+  tableBody,
+  paginationInfo,
+  tableHeaders
+) => {
+  if (prevPageButton && nextPageButton) {
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        renderTable(
+          tableBody,
+          paginationInfo,
+          prevPageButton,
+          nextPageButton,
+          data,
+          sort,
+          currentPage,
+          tableHeaders
+        );
       }
-
-      userSort = toggleSortDirection(userSort, sortKey);
-      userCurrentPage = 1;
-      renderUserTable();
     });
-  });
-}
 
-if (twoToiTableHeaders.length > 0) {
-  twoToiTableHeaders.forEach((header) => {
-    header.addEventListener("click", () => {
-      const { sortKey } = header.dataset;
-
-      if (!sortKey) {
-        return;
+    nextPageButton.addEventListener("click", () => {
+      if (currentPage < getTotalPages(data)) {
+        currentPage += 1;
+        renderTable(
+          tableBody,
+          paginationInfo,
+          prevPageButton,
+          nextPageButton,
+          data,
+          sort,
+          currentPage,
+          tableHeaders
+        );
       }
-
-      twoToiSort = toggleSortDirection(twoToiSort, sortKey);
-      twoToiCurrentPage = 1;
-      renderTwoToiTable();
     });
+  }
+};
+
+userTableHeaders = renderTableHeaders("user-table", mockData, userHeadersLabel);
+twoToiTableHeaders = renderTableHeaders("two-toi-table", mock2Toi, twoToiHeadersLabel);
+
+callEventPagination(
+  userPrevPageButton,
+  userNextPageButton,
+  userCurrentPage,
+  mockData,
+  userSort,
+  userTableBody,
+  userPaginationInfo,
+  userTableHeaders
+);
+
+callEventPagination(
+  twoToiPrevPageButton,
+  twoToiNextPageButton,
+  twoToiCurrentPage,
+  mock2Toi,
+  twoToiSort,
+  twoToiTableBody,
+  twoToiPaginationInfo,
+  twoToiTableHeaders
+);
+
+//fonction pour ajouter les événements de tri aux en-têtes de table
+const callEventSort = (
+  tableHeaders,
+  sortState,
+  currentPage,
+  data,
+  tableBody,
+  paginationInfo,
+  prevPageButton,
+  nextPageButton
+) => {
+  if (tableHeaders.length > 0) {
+    tableHeaders.forEach((header) => {
+      header.addEventListener("click", () => {
+        const { sortKey } = header.dataset;
+
+        if (!sortKey) {
+          return;
+        }
+
+        sortState = toggleSortDirection(sortState, sortKey);
+        currentPage = 1;
+        renderTable(
+          tableBody,
+          paginationInfo,
+          prevPageButton,
+          nextPageButton,
+          data,
+          sortState,
+          currentPage,
+          tableHeaders
+        );
+      });
+    });
+  }
+};
+
+callEventSort(
+  userTableHeaders,
+  userSort,
+  userCurrentPage,
+  mockData,
+  userTableBody,
+  userPaginationInfo,
+  userPrevPageButton,
+  userNextPageButton
+);
+
+callEventSort(
+  twoToiTableHeaders,
+  twoToiSort,
+  twoToiCurrentPage,
+  mock2Toi,
+  twoToiTableBody,
+  twoToiPaginationInfo,
+  twoToiPrevPageButton,
+  twoToiNextPageButton
+);
+
+renderTable(
+  userTableBody,
+  userPaginationInfo,
+  userPrevPageButton,
+  userNextPageButton,
+  mockData,
+  userSort,
+  userCurrentPage,
+  userTableHeaders
+);
+renderTable(
+  twoToiTableBody,
+  twoToiPaginationInfo,
+  twoToiPrevPageButton,
+  twoToiNextPageButton,
+  mock2Toi,
+  twoToiSort,
+  twoToiCurrentPage,
+  twoToiTableHeaders
+);
+
+// Section séléctionnée par défaut
+let selectedSection = "liste-semaine";
+
+// Configuration des sections et des éléments de navigation
+const allSectionName = [
+  { name: "liste-semaine", section: listeSemaineSection, nav: navListeSemaine },
+  { name: "2toi", section: twoToiSection, nav: nav2Toi },
+  // Ajouter une nouvelle section ici en suivant le même format
+];
+
+// Classes CSS pour les états actif et inactif des éléments de navigation
+const navActiveClasses = [
+  "bg-indigo-900",
+  "text-white",
+  "border-indigo-900",
+  "hover:bg-indigo-950",
+];
+const navInactiveClasses = ["bg-white/5", "text-white", "border-white/20", "hover:bg-white/10"];
+
+// Ajouter les événements et de manipuler les classes
+const setNavState = (button, isActive) => {
+  button.classList.remove(...navActiveClasses, ...navInactiveClasses);
+  button.classList.add(...(isActive ? navActiveClasses : navInactiveClasses));
+};
+
+const setActiveSection = (section) => {
+  allSectionName.forEach((item) => {
+    const isSelected = item.name === section;
+
+    item.section.classList.toggle("hidden", !isSelected);
+    setNavState(item.nav, isSelected);
   });
-}
+};
 
-renderUserTable();
-renderTwoToiTable();
-
-if (listeSemaineSection && twoToiSection && navListeSemaine && nav2Toi) {
-  const navActiveClasses = [
-    "bg-indigo-900",
-    "text-white",
-    "border-indigo-900",
-    "hover:bg-indigo-950",
-  ];
-  const navInactiveClasses = ["bg-white/5", "text-white", "border-white/20", "hover:bg-white/10"];
-
-  const setNavState = (button, isActive) => {
-    button.classList.remove(...navActiveClasses, ...navInactiveClasses);
-    button.classList.add(...(isActive ? navActiveClasses : navInactiveClasses));
-  };
-
-  const setActiveSection = (section) => {
-    const showListeSemaine = section === "liste-semaine";
-
-    listeSemaineSection.classList.toggle("hidden", !showListeSemaine);
-    twoToiSection.classList.toggle("hidden", showListeSemaine);
-
-    setNavState(navListeSemaine, showListeSemaine);
-    setNavState(nav2Toi, !showListeSemaine);
-  };
-
-  navListeSemaine.addEventListener("click", (event) => {
+allSectionName.forEach((item) => {
+  item.nav.addEventListener("click", (event) => {
     event.preventDefault();
-    setActiveSection("liste-semaine");
+    setActiveSection(item.name);
   });
+});
 
-  nav2Toi.addEventListener("click", (event) => {
-    event.preventDefault();
-    setActiveSection("2toi");
-  });
-
-  setActiveSection("liste-semaine");
-}
+setActiveSection(selectedSection);
