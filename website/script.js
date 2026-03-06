@@ -432,7 +432,7 @@ const navListeSemaine = document.getElementById("nav-liste-semaine");
 const nav2Toi = document.getElementById("nav-2toi");
 const userTableHeaders = document.querySelectorAll("#user-table th[data-sort-key]");
 const twoToiTableHeaders = document.querySelectorAll("#two-toi-table th[data-sort-key]");
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 13;
 
 let userCurrentPage = 1;
 let twoToiCurrentPage = 1;
@@ -468,14 +468,14 @@ const updateHeaderSortState = (headers, sortState) => {
     const isDescending = isActive && sortState.direction === "desc";
 
     const sortIcon = isAscending
-      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-indigo-700">
+      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-indigo-800">
           <path fill-rule="evenodd" d="M10 3.22a.75.75 0 01.53.22l4.25 4.25a.75.75 0 11-1.06 1.06L10.75 5.81v10.97a.75.75 0 01-1.5 0V5.81L6.28 8.75a.75.75 0 11-1.06-1.06l4.25-4.25a.75.75 0 01.53-.22z" clip-rule="evenodd" />
         </svg>`
       : isDescending
-      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-indigo-700">
+      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-indigo-800">
             <path fill-rule="evenodd" d="M10 16.78a.75.75 0 01-.53-.22l-4.25-4.25a.75.75 0 011.06-1.06l2.97 2.94V3.22a.75.75 0 011.5 0v10.97l2.97-2.94a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-.53.22z" clip-rule="evenodd" />
           </svg>`
-      : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-slate-400">
+      : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-slate-500">
             <path fill-rule="evenodd" d="M10 3.22a.75.75 0 01.53.22l4.25 4.25a.75.75 0 11-1.06 1.06L10.75 5.81v10.97a.75.75 0 01-1.5 0V5.81L6.28 8.75a.75.75 0 11-1.06-1.06l4.25-4.25a.75.75 0 01.53-.22zm0 13.56a.75.75 0 01-.53-.22l-4.25-4.25a.75.75 0 011.06-1.06l2.97 2.94V3.22a.75.75 0 011.5 0v10.97l2.97-2.94a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-.53.22z" clip-rule="evenodd" />
           </svg>`;
 
@@ -504,12 +504,12 @@ const renderUserTable = () => {
   userTableBody.innerHTML = pagedItems
     .map(
       (user) => `
-      <tr class="hover:bg-indigo-50 transition-colors">
-        <td class="px-6 py-4 text-sm font-medium text-slate-800 whitespace-nowrap">${user.nom}</td>
-        <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${user.prenom}</td>
-        <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${user.region}</td>
-        <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${user.ville}</td>
-        <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${user.numero}</td>
+      <tr class="hover:bg-indigo-100 transition-colors">
+        <td class="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">${user.nom}</td>
+        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.prenom}</td>
+        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.region}</td>
+        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.ville}</td>
+        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${user.numero}</td>
       </tr>
     `
     )
@@ -536,9 +536,9 @@ const renderTwoToiTable = () => {
   twoToiTableBody.innerHTML = pagedItems
     .map(
       (item) => `
-      <tr class="hover:bg-violet-50 transition-colors">
-        <td class="px-6 py-4 text-sm font-medium text-slate-800 whitespace-nowrap">${item.agent}</td>
-        <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">${item.msisdn}</td>
+      <tr class="hover:bg-violet-100 transition-colors">
+        <td class="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">${item.agent}</td>
+        <td class="px-6 py-4 text-sm text-slate-800 whitespace-nowrap">${item.msisdn}</td>
       </tr>
     `
     )
@@ -632,8 +632,13 @@ renderUserTable();
 renderTwoToiTable();
 
 if (listeSemaineSection && twoToiSection && navListeSemaine && nav2Toi) {
-  const navActiveClasses = ["bg-blue-700", "text-white", "border-blue-700", "hover:bg-blue-800"];
-  const navInactiveClasses = ["bg-white/10", "text-white", "border-white/30", "hover:bg-white/20"];
+  const navActiveClasses = [
+    "bg-indigo-900",
+    "text-white",
+    "border-indigo-900",
+    "hover:bg-indigo-950",
+  ];
+  const navInactiveClasses = ["bg-white/5", "text-white", "border-white/20", "hover:bg-white/10"];
 
   const setNavState = (button, isActive) => {
     button.classList.remove(...navActiveClasses, ...navInactiveClasses);
