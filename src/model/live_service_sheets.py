@@ -39,6 +39,7 @@ class RecapRZ(
     FileIdMixin,
 ):
     __tablename__ = "recap_rz"
+    __table_args__ = {"schema": "public"}
 
     file: Mapped["File"] = relationship("File", back_populates="recap_rz")
 
@@ -57,7 +58,7 @@ class DetailsApproRz(
     FileIdMixin,
 ):
     __tablename__ = "details_appro_rz"
-
+    __table_args__ = {"schema": "public"}
     file: Mapped["File"] = relationship("File", back_populates="details_appro_rz")
 
 
@@ -77,5 +78,5 @@ class DetailsCP(
     FileIdMixin,
 ):
     __tablename__ = "details_cp"
-
+    __table_args__ = {"schema": "public"}
     file: Mapped["File"] = relationship("File", back_populates="details_cp")

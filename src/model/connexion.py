@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 class Connexion(BaseConnexion):
     __tablename__ = 'connexions'
+    __table_args__ = {"schema": "connexion"}
 
     id = Column(Integer, primary_key=True)
     source: Mapped[str] = mapped_column(String(255), nullable=False)

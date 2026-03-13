@@ -6,6 +6,7 @@ from src.model.base import Base
 
 class File(Base):
     __tablename__ = "file"
+    __table_args__ = {"schema": "public"}
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)

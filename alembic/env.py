@@ -1,12 +1,13 @@
 from logging.config import fileConfig
+from datetime import datetime
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 from src.config.config import url_postgres
-from src.model.base import Base
-from src.model import file, live_service_sheets, suivi
+from src.model.base import Base, BaseConnexion
+from src.model import file, live_service_sheets, suivi, connexion
 
 def process_revision_directives(context, revision, directives):
     if context.config.get_main_option("revision_environment") == "true":
@@ -27,7 +28,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = [Base.metadata, BaseConnexion.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -51,6 +52,7 @@ def run_migrations_offline() -> None:
     context.configure(
         url=url,
         target_metadata=target_metadata,
+        include_schemas=True,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         process_revision_directives=process_revision_directives,
@@ -77,7 +79,10 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata, process_revision_directives=process_revision_directives
+            connection=connection,
+            target_metadata=target_metadata,
+            include_schemas=True,
+            process_revision_directives=process_revision_directives,
         )
 
         with context.begin_transaction():

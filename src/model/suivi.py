@@ -6,6 +6,7 @@ from src.model.mixins import IdMixin, FileIdMixin
 
 class TransactionRZ(Base):
     __tablename__ = "transaction_rz"
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     msisdn_rz: Mapped[str] = mapped_column(String, nullable=False)
@@ -19,7 +20,7 @@ class TransactionRZ(Base):
     
 class TransactionGrossisteVersRZ(Base):
     __tablename__ = "transaction_grossiste_vers_rz"
-
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     msisdn_grossiste: Mapped[str] = mapped_column(String, nullable=False)
@@ -32,6 +33,7 @@ class TransactionGrossisteVersRZ(Base):
     
 class TransactionPDV(Base):
     __tablename__ = "transaction_pdv"
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     msisdn_pdv: Mapped[str] = mapped_column(String, nullable=False)
@@ -46,6 +48,7 @@ class TransactionPDV(Base):
     
 class TransactionLivreur(Base):
     __tablename__ = "transaction_livreur"
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     msisdn_livreur: Mapped[str] = mapped_column(String, nullable=False)
@@ -58,6 +61,7 @@ class TransactionLivreur(Base):
     
 class TransactionGrossisteLivreur(Base):
     __tablename__ = "transaction_grossiste_livreur"
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     msisdn_grossiste: Mapped[str] = mapped_column(String, nullable=False)
@@ -70,6 +74,7 @@ class TransactionGrossisteLivreur(Base):
     
 class SoldeAgents(Base):
     __tablename__ = "solde_agents"
+    __table_args__ = {"schema": "public"}
 
     date: Mapped[date] = mapped_column(Date, nullable=False)
     type_agent: Mapped[str] = mapped_column(String, nullable=False)
@@ -79,4 +84,4 @@ class SoldeAgents(Base):
     balance: Mapped[int] = mapped_column(BigInteger, nullable=False)
     
     file_id: Mapped[int] = mapped_column(ForeignKey("file.id"), nullable=False)
-    file: Mapped["File"] = relationship("File", back_populates="solde_agents")
+    file: Mapped["File"] = relationship("File", back_populates="solde_agents")  
