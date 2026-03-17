@@ -1,4 +1,4 @@
-from src.model.base import BaseConnexion
+from app.model.base import BaseConnexion
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 

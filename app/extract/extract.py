@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 import numpy as np
 from sqlalchemy import Date
-from src.model.file import File
+from app.model.file import File
 
 class ExtractEngine:
     def __init__(self, folder_path, sheets):

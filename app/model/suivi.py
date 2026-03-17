@@ -1,8 +1,8 @@
-from src.model.base import Base
+from app.model.base import Base
 from datetime import date
 from sqlalchemy import BigInteger, Date, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.model.mixins import IdMixin, FileIdMixin
+from app.model.mixins import IdMixin, FileIdMixin
 
 class TransactionRZ(Base):
     __tablename__ = "transaction_rz"

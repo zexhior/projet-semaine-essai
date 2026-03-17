@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
-from src.model.live_service_sheets import RecapRZ, DetailsApproRz, DetailsCP
-from src.model.suivi import (
+from app.model.live_service_sheets import RecapRZ, DetailsApproRz, DetailsCP
+from app.model.suivi import (
     TransactionRZ,
     TransactionGrossisteVersRZ,
     TransactionPDV,
@@ -9,9 +9,9 @@ from src.model.suivi import (
     TransactionGrossisteLivreur,
     SoldeAgents
 )
-from src.model.connexion import Connexion
+from app.model.connexion import Connexion
 
-# Add src directory to Python path
+# Add app directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config.connexion import session

@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.model.base import Base
+from app.model.base import Base
 
 class File(Base):
     __tablename__ = "file"

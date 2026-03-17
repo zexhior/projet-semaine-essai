@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, relationship
 
-from src.model.base import Base
-from src.model.mixins import (
+from app.model.base import Base
+from app.model.mixins import (
     ApproCashUmeMixin,
     ApproRzAmountsMixin,
     ApproTdpAmountsMixin,
