@@ -5,9 +5,9 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from src.config.config import url_postgres
-from src.model.base import Base, BaseConnexion
-from src.model import file, live_service_sheets, suivi, connexion
+from app.config.config import url_postgres
+from app.model.base import Base, BaseConnexion
+from app.model import file, live_service_sheets, suivi, connexion
 
 def process_revision_directives(context, revision, directives):
     if context.config.get_main_option("revision_environment") == "true":
